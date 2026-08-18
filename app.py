@@ -3,10 +3,18 @@ SkyCity Auckland Restaurants & Bars - Order Channel Performance & Market Share A
 Interactive Streamlit Web Dashboard
 """
 
+import sys
+import os
+from pathlib import Path
+
+# Ensure repository root is on sys.path for Streamlit Community Cloud and subfolder execution
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+
 import streamlit as st
 import pandas as pd
 import numpy as np
-import os
 
 from src.data_cleaning import clean_and_prepare_data
 from src.eda import (
@@ -63,15 +71,16 @@ st.markdown("""
 
 @st.cache_data
 def load_data():
-    csv_path = os.path.join('data', 'skycity_orders.csv')
+    csv_path = os.path.join(PROJECT_ROOT, 'data', 'skycity_orders.csv')
     if not os.path.exists(csv_path):
-        if os.path.exists('skycity_orders.csv'):
-            csv_path = 'skycity_orders.csv'
+        alt_path = os.path.join(PROJECT_ROOT, 'skycity_orders.csv')
+        if os.path.exists(alt_path):
+            csv_path = alt_path
         else:
             from src.data_generator import generate_orders_dataset
-            master_path = "SkyCity Auckland Restaurants & Bars.csv"
-            if not os.path.exists(master_path) and os.path.exists(os.path.join('data', master_path)):
-                master_path = os.path.join('data', master_path)
+            master_path = os.path.join(PROJECT_ROOT, "SkyCity Auckland Restaurants & Bars.csv")
+            if not os.path.exists(master_path) and os.path.exists(os.path.join(PROJECT_ROOT, 'data', "SkyCity Auckland Restaurants & Bars.csv")):
+                master_path = os.path.join(PROJECT_ROOT, 'data', "SkyCity Auckland Restaurants & Bars.csv")
             generate_orders_dataset(master_path, csv_path)
     df_raw = pd.read_csv(csv_path)
     return clean_and_prepare_data(df_raw)
