@@ -9,8 +9,8 @@ import plotly.express as px
 import plotly.graph_objects as go
 try:
     from src.utils import COLOR_PALETTE
-except ModuleNotFoundError:
-    from utils import COLOR_PALETTE
+except (ImportError, ModuleNotFoundError):
+    from .utils import COLOR_PALETTE
 
 def calculate_kpis(df: pd.DataFrame) -> dict:
     """Calculates all 14 project KPIs dynamically from dataset."""
