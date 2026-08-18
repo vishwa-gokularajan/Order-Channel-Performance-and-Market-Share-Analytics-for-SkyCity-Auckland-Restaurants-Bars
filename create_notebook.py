@@ -24,11 +24,11 @@ def generate_notebook(output_path: str = "notebooks/analysis.ipynb"):
                     'import pandas as pd\n',
                     'import numpy as np\n',
                     'import plotly.express as px\n',
-                    'from src.data_cleaning import clean_and_prepare_data\n',
-                    'from src.eda import calculate_kpis, get_regional_dominance_matrix\n',
-                    'from src.stats_analysis import run_chi_square_test, run_anova_test, run_ttest\n',
-                    'from src.forecasting import prepare_daily_timeseries, forecast_arima\n',
-                    'from src.ml_models import train_and_evaluate_ml_models\n',
+                    'from data_cleaning import clean_and_prepare_data\n',
+                    'from eda import calculate_kpis, get_regional_dominance_matrix\n',
+                    'from stats_analysis import run_chi_square_test, run_anova_test, run_ttest\n',
+                    'from forecasting import prepare_daily_timeseries, forecast_arima\n',
+                    'from ml_models import train_and_evaluate_ml_models\n',
                     'print("Libraries successfully imported!")'
                 ]
             },

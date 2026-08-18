@@ -8,16 +8,14 @@ import os
 from pathlib import Path
 
 # Ensure repository root is on sys.path for Streamlit Community Cloud and subfolder execution
-PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
-if PROJECT_ROOT not in sys.path:
-    sys.path.insert(0, PROJECT_ROOT)
+BASE_DIR = Path(__file__).resolve().parent
 
 import streamlit as st
 import pandas as pd
 import numpy as np
 
-from src.data_cleaning import clean_and_prepare_data
-from src.eda import (
+from data_cleaning import clean_and_prepare_data
+from eda import (
     calculate_kpis, get_regional_dominance_matrix,
     plot_orders_by_channel, plot_revenue_by_channel, plot_profit_by_channel,
     plot_market_share_by_restaurant, plot_market_share_by_channel,
@@ -28,13 +26,13 @@ from src.eda import (
     plot_direct_vs_aggregator_performance, plot_aov_by_channel,
     plot_profit_margin_by_channel, plot_customer_rating_by_channel, plot_correlation_heatmap
 )
-from src.stats_analysis import run_chi_square_test, run_anova_test, run_ttest
-from src.forecasting import (
+from stats_analysis import run_chi_square_test, run_anova_test, run_ttest
+from forecasting import (
     prepare_daily_timeseries, forecast_arima, forecast_exponential_smoothing,
     forecast_moving_average, plot_time_series_forecast
 )
-from src.ml_models import train_and_evaluate_ml_models, plot_feature_importances
-from src.utils import format_currency, format_number, format_percentage
+from ml_models import train_and_evaluate_ml_models, plot_feature_importances
+from utils import format_currency, format_number, format_percentage
 
 # --- Page Configuration ---
 st.set_page_config(
@@ -71,17 +69,17 @@ st.markdown("""
 
 @st.cache_data
 def load_data():
-    csv_path = os.path.join(PROJECT_ROOT, 'data', 'skycity_orders.csv')
-    if not os.path.exists(csv_path):
-        alt_path = os.path.join(PROJECT_ROOT, 'skycity_orders.csv')
-        if os.path.exists(alt_path):
+    csv_path = BASE_DIR / 'data' / 'skycity_orders.csv'
+    if not csv_path.exists():
+        alt_path = BASE_DIR / 'skycity_orders.csv'
+        if alt_path.exists():
             csv_path = alt_path
         else:
-            from src.data_generator import generate_orders_dataset
-            master_path = os.path.join(PROJECT_ROOT, "SkyCity Auckland Restaurants & Bars.csv")
-            if not os.path.exists(master_path) and os.path.exists(os.path.join(PROJECT_ROOT, 'data', "SkyCity Auckland Restaurants & Bars.csv")):
-                master_path = os.path.join(PROJECT_ROOT, 'data', "SkyCity Auckland Restaurants & Bars.csv")
-            generate_orders_dataset(master_path, csv_path)
+            from data_generator import generate_orders_dataset
+            master_path = BASE_DIR / "SkyCity Auckland Restaurants & Bars.csv"
+            if not master_path.exists() and (BASE_DIR / 'data' / "SkyCity Auckland Restaurants & Bars.csv").exists():
+                master_path = BASE_DIR / 'data' / "SkyCity Auckland Restaurants & Bars.csv"
+            generate_orders_dataset(str(master_path), str(csv_path))
     df_raw = pd.read_csv(csv_path)
     return clean_and_prepare_data(df_raw)
 
